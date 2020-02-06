@@ -14,7 +14,7 @@ namespace ps {
 /**
  * \brief the center of the system
  */
-class Postoffice {s
+class Postoffice {
  public:
   /**
    * \brief return the singleton object

@@ -155,7 +155,7 @@ class ZMQVan : public Van {
         else
           recv_id = (msg.meta.recver - 8) / 2 + num_workers;//编号最开始是worker，之后是server,最后是scheduler
         if (record_count == 0) {
-          FILE *file = fopen("/home/hadoop/tensor/data_trace/trace_record.txt", "a");
+          FILE *file = fopen("/mnt/data_trace/trace_record.txt", "a");
           fprintf(file, "ID\tsrc\tdst\tlength\tDep\tdTime\tIDdep\tDep_PP\n");
           //    fprintf(file, "%d\tworker%d\tserver%d\t%d\t%d\t%d\t%d\n", record_count, send_id, recv_id, bytes,
           //      0, 0, record_count - 1);
@@ -165,7 +165,7 @@ class ZMQVan : public Van {
         }
         else {//如果不是第一次send，则存在接收依赖；
           dep_time = 1000000 * (end.tv_sec - start.tv_sec) + end.tv_usec - start.tv_usec;
-          FILE *file = fopen("/home/hadoop/tensor/data_trace/trace_record.txt","a");
+          FILE *file = fopen("/mnt/data_trace/trace_record.txt","a");
           fprintf(file, "%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t\tOP:= %s\t\two_s_p_msg.meta.recver:=%d\tthread_lwid:=%u\tthread_tid:=%u\n", record_count, send_id, recv_id, bytes,
                   2, dep_time, record_count - 1,msg.meta.push_pull_operation, operation.c_str(), msg.meta.recver,syscall(SYS_gettid),pthread_self());
           fclose(file);
@@ -180,7 +180,7 @@ class ZMQVan : public Van {
           recv_id = (msg.meta.recver - 9) / 2;
         send_id = send_id + num_workers;
         if (record_count == 0) {
-          FILE *file = fopen("/home/hadoop/tensor/data_trace/trace_record.txt","a");
+          FILE *file = fopen("/mnt/data_trace/trace_record.txt","a");
           fprintf(file, "ID\tsrc\tdst\tlength\tDep\tdTime\tIDdep\tDep_PP\n");
 //                fprintf(file, "%d\tserver%d\tworker%d\t%d\t%d\t%d\t%d\n", record_count, send_id, recv_id, bytes,
 //                  0, 0, record_count - 1);
@@ -190,7 +190,7 @@ class ZMQVan : public Van {
         }
         else {//如果不是第一次send，则存在接收依赖；
           dep_time = 1000000 * (end.tv_sec - start.tv_sec) + end.tv_usec - start.tv_usec;
-          FILE *file = fopen("/home/hadoop/tensor/data_trace/trace_record.txt","a");
+          FILE *file = fopen("/mnt/data_trace/trace_record.txt","a");
           fprintf(file, "%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t\tOP:= %s\t\tser_s_p_msg.meta.recver:=%d\tthread_lwid:=%u\tthread_tid:=%u\n", record_count, send_id, recv_id, bytes,
                   2, dep_time, record_count - 1, msg.meta.push_pull_operation, operation.c_str(), msg.meta.recver,syscall(SYS_gettid),pthread_self());
           fclose(file);
@@ -208,14 +208,14 @@ class ZMQVan : public Van {
             recv_id = (msg.meta.recver - 9)/2;
         }
         if(record_count == 0) {
-          FILE *file = fopen("/home/hadoop/tensor/data_trace/trace_record.txt", "a");
+          FILE *file = fopen("/mnt/data_trace/trace_record.txt", "a");
           fprintf(file, "ID\tsrc\tdst\tlength\tDep\tdTime\tIDdep\tDep_PP\n");
           fprintf(file, "%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t\tOP:= %s\t\tsch_s_f_msg.meta.recver:=%d\tscheduler_hostname:=\t%s\n", record_count,
                   send_id, recv_id, bytes, 0, 0, record_count - 1, msg.meta.push_pull_operation, operation.c_str(), msg.meta.recver, host);
           fclose(file);
         }
         else{
-          FILE *file = fopen("/home/hadoop/tensor/data_trace/trace_record.txt","a");
+          FILE *file = fopen("/mnt/data_trace/trace_record.txt","a");
           fprintf(file, "%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t\tOP:= %s\t\tsch_s_p_msg.meta.recver:=%d\n", record_count,
                   send_id, recv_id, bytes, 0, 0, record_count - 1,msg.meta.push_pull_operation, operation.c_str(),  msg.meta.recver);
           fclose(file);
@@ -249,7 +249,7 @@ class ZMQVan : public Van {
         else
           send_id = msg->meta.sender + num_servers + num_workers - 1;//发送的节点是scheduler节点；
         if(record_count == 0){
-          FILE *file = fopen("/home/hadoop/tensor/data_trace/trace_record.txt","a");
+          FILE *file = fopen("/mnt/data_trace/trace_record.txt","a");
           fprintf(file, "ID\tsrc\tdst\tlength\tDep\tdTime\tIDdep\tDep_PP\n");
           fprintf(file, "%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t\tOP:= %s\t\trec_w_f_msg.meta.recver:=%d\tworker_hostname:=\t%s\n", record_count,
                   send_id, recv_id, bytes, 0, 0, record_count - 1,msg->meta.push_pull_operation, operation.c_str(), msg->meta.recver,host);
@@ -257,7 +257,7 @@ class ZMQVan : public Van {
         }
         else{
           dep_time = 1000000*(start.tv_sec - end.tv_sec) + (start.tv_usec - end.tv_usec);
-          FILE *file = fopen("/home/hadoop/tensor/data_trace/trace_record.txt","a");
+          FILE *file = fopen("/mnt/data_trace/trace_record.txt","a");
           fprintf(file, "%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t\tOP:= %s\t\trec_w_plus_msg.meta.recver:=%d\tthread_lwid:=%u\tthread_tid:=%u\n", record_count,
                   send_id, recv_id, bytes, 1, dep_time, record_count - 1, msg->meta.push_pull_operation, operation.c_str(), msg->meta.recver,syscall(SYS_gettid),pthread_self());
           fclose(file);
@@ -271,7 +271,7 @@ class ZMQVan : public Van {
         else
           send_id = (msg->meta.sender - 9)/2;
         if(record_count == 0){
-          FILE *file = fopen("/home/hadoop/tensor/data_trace/trace_record.txt","a");
+          FILE *file = fopen("/mnt/data_trace/trace_record.txt","a");
           fprintf(file, "ID\tsrc\tdst\tlength\tDep\tdTime\tIDdep\tDep_PP\n");
           fprintf(file, "%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t\tOP:= %s\t\trec_ser_f_msg.meta.recver:=%d\tserver_hostname:=\t%s\n", record_count,
                   send_id, recv_id, bytes, 0, 0, record_count - 1, msg->meta.push_pull_operation, operation.c_str(), msg->meta.recver, host);
@@ -279,7 +279,7 @@ class ZMQVan : public Van {
         }
         else{
           dep_time = 1000000*(start.tv_sec - end.tv_sec) + (start.tv_usec - end.tv_usec);
-          FILE *file = fopen("/home/hadoop/tensor/data_trace/trace_record.txt","a");
+          FILE *file = fopen("/mnt/data_trace/trace_record.txt","a");
           fprintf(file, "%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t\tOP:= %s\t\trec_ser_plus_msg.meta.recver:=%d\tthread_lwid:=%u\tthread_tid:=%u\n", record_count,
                   send_id, recv_id, bytes, 1, dep_time, record_count - 1, msg->meta.push_pull_operation, operation.c_str(), msg->meta.recver, syscall(SYS_gettid),pthread_self());
           fclose(file);
@@ -303,14 +303,14 @@ class ZMQVan : public Van {
           dep_time = 0;
         }
         if(record_count == 0){
-          FILE *file = fopen("/home/hadoop/tensor/data_trace/trace_record.txt","a");
+          FILE *file = fopen("/mnt/data_trace/trace_record.txt","a");
           fprintf(file, "ID\tsrc\tdst\tlength\tDep\tdTime\tIDdep\tDep_PP\n");
           fprintf(file, "%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t\tOP:= %s\t\trec_sch_f_msg.meta.recver:=%d\tscheduler_hostname:=%s\n", record_count,
                   send_id, recv_id, bytes, 0, 0, record_count - 1, msg->meta.push_pull_operation, operation.c_str(), msg->meta.recver,host);
           fclose(file);
         }
         else{
-          FILE *file = fopen("/home/hadoop/tensor/data_trace/trace_record.txt","a");
+          FILE *file = fopen("/mnt/data_trace/trace_record.txt","a");
           fprintf(file, "%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t\tOP:= %s\t\trec_sch_plus_msg.meta.recver:=%d\n", record_count,
                   send_id, recv_id, bytes, 1, dep_time, record_count - 1, msg->meta.push_pull_operation, operation.c_str(), msg->meta.recver);
           fclose(file);
@@ -321,7 +321,7 @@ class ZMQVan : public Van {
 
     void foo()
     {
-      FILE *file = fopen("/home/hadoop/tensor/data_trace/trace_record.txt","a");
+      FILE *file = fopen("/mnt/data_trace/trace_record.txt","a");
       for(int i = 0; i< 500; i++)
       {
         fprintf(file,"record_count:=%d\t\t%d\n", i, trace_[i]);
@@ -366,14 +366,14 @@ class ZMQVan : public Van {
                     recv_id = (msg.meta.recver - 9)/2;
             }
             if(record_sch == 0) {
-                FILE *file = fopen("/home/hadoop/tensor/data_trace/trace_sch_record.txt", "a");
+                FILE *file = fopen("/mnt/data_trace/trace_sch_record.txt", "a");
                 fprintf(file, "ID\tsrc\tdst\tlength\tDep\tdTime\tIDdep\tDep_PP\n");
                 fprintf(file, "%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t\tOP:= Scheduler_Comm\t\tsch_s_f_msg.meta.recver:=%d\tscheduler_hostname:=\t%s\n", record_sch,
                         send_id, recv_id, send_bytes, 0, 0, record_sch - 1, msg.meta.push_pull_operation,msg.meta.recver, host);
                 fclose(file);
             }
             else{
-                FILE *file = fopen("/home/hadoop/tensor/data_trace/trace_sch_record.txt","a");
+                FILE *file = fopen("/mnt/data_trace/trace_sch_record.txt","a");
                 fprintf(file, "%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t\tOP:= Scheduler_Comm\t\tsch_s_p_msg.meta.recver:=%d\n", record_sch,
                         send_id, recv_id, send_bytes, 0, 0, record_sch - 1,msg.meta.push_pull_operation,  msg.meta.recver);
                 fclose(file);
@@ -386,7 +386,7 @@ class ZMQVan : public Van {
             if(msg.meta.recver == 1){
                 recv_id = msg.meta.recver + num_servers + num_workers - 1;//接收的节点为scheduler节点
                 if (record_sch == 0) {
-                    FILE *file = fopen("/home/hadoop/tensor/data_trace/trace_sch_record.txt", "a");
+                    FILE *file = fopen("/mnt/data_trace/trace_sch_record.txt", "a");
                     fprintf(file, "ID\tsrc\tdst\tlength\tDep\tdTime\tIDdep\tDep_PP\n");
                     //    fprintf(file, "%d\tworker%d\tserver%d\t%d\t%d\t%d\t%d\n", record_count, send_id, recv_id, bytes,
                     //      0, 0, record_count - 1);
@@ -396,7 +396,7 @@ class ZMQVan : public Van {
                 }
                 else{//如果不是第一次send，则存在接收依赖；
                     dep_time = 1000000 * (end.tv_sec - start.tv_sec) + end.tv_usec - start.tv_usec;
-                    FILE *file = fopen("/home/hadoop/tensor/data_trace/trace_sch_record.txt","a");
+                    FILE *file = fopen("/mnt/data_trace/trace_sch_record.txt","a");
                     fprintf(file, "%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t\tOP:= Worker_Send_Sch\t\two_s_p_msg.meta.recver:=%d\n", record_sch, send_id, recv_id, send_bytes,
                             2, dep_time, record_sch - 1,msg.meta.push_pull_operation, msg.meta.recver);
                     fclose(file);
@@ -412,7 +412,7 @@ class ZMQVan : public Van {
                         Trace_Push_Send[recv_id_t][key].operation_num = 0;
                         Trace_Push_Send[recv_id_t][key].time            = end;
                         if (record_count == 0) {//如果是刚开始，则在文件的第一部分写入相关内容的名称；
-                            FILE *file = fopen("/home/hadoop/tensor/data_trace/trace_record.txt", "a");
+                            FILE *file = fopen("/mnt/data_trace/trace_record.txt", "a");
 			    fprintf(file,"====================================================================================================================================\n");
                             fprintf(file,"==		 num_workers: = %d     num_servers: = %d     worker_hostname:= %s            \n", num_workers, num_servers, host);//基础信息
 			    fprintf(file,"==		 Worker_ID: = ");
@@ -439,7 +439,7 @@ class ZMQVan : public Van {
                             fclose(file);
                         }
                         else{
-                            FILE *file = fopen("/home/hadoop/tensor/data_trace/trace_record.txt", "a");
+                            FILE *file = fopen("/mnt/data_trace/trace_record.txt", "a");
                             fprintf(file, "%d\t%d\t%d\t%d\t\t%d\t\tOP:= Push_Send_Worker\t\t%d-%d-s%d\t\t%d\t\t%d\t\t%d\t\t%d\t\t%d\n",
                                     record_count, send_id, recv_id, send_bytes, msg.meta.push_pull_operation, key, Trace_Push_Send[recv_id_t][key].operation_num, recv_id_t, 0, 0,  end.tv_sec, end.tv_usec, -1);//此时的依赖为-1，不存在依赖；
                             fclose(file);
@@ -450,7 +450,7 @@ class ZMQVan : public Van {
                         Trace_Push_Send[recv_id_t][key].operation_num = Trace_Pull_Recv[recv_id_t][key].operation_num+1;
                         Trace_Push_Send[recv_id_t][key].time            = end;
                         dep_time = 1000000 * (end.tv_sec - (Trace_Pull_Recv[recv_id_t][key].time).tv_sec) + end.tv_usec - (Trace_Pull_Recv[recv_id_t][key].time).tv_usec;
-                        FILE *file = fopen("/home/hadoop/tensor/data_trace/trace_record.txt", "a");
+                        FILE *file = fopen("/mnt/data_trace/trace_record.txt", "a");
                         fprintf(file, "%d\t%d\t%d\t%d\t\t%d\t\tOP:= Push_Send_Worker\t\t%d-%d-s%d\t\t%d\t\t%d\t\t%d\t\t%d\t\t(",
                                     record_count, send_id, recv_id, send_bytes, msg.meta.push_pull_operation, key, Trace_Push_Send[recv_id_t][key].operation_num, recv_id_t, 4, dep_time, end.tv_sec, end.tv_usec);//push_Send依赖于所有key值的Recv_Pull操作的完成；
              		for(int sj=0; sj<num_servers; sj++)
@@ -464,7 +464,7 @@ class ZMQVan : public Van {
                     //此为SendCommandToServers, key为-1, msg.meta.push_pull_operation的值为0
                     if(msg.meta.recv_key == -1){
                         if (record_count == 0) {//如果是刚开始，则在文件的第一部分写入相关内容的名称；
-                            FILE *file = fopen("/home/hadoop/tensor/data_trace/trace_record.txt", "a");
+                            FILE *file = fopen("/mnt/data_trace/trace_record.txt", "a");
 			    fprintf(file,"====================================================================================================================================\n");
                             fprintf(file,"==		 num_workers: = %d     num_servers: = %d     worker_hostname:= %s            \n", num_workers, num_servers, host);//基础信息
 			    fprintf(file,"==		 Worker_ID: = ");
@@ -491,7 +491,7 @@ class ZMQVan : public Van {
                             fclose(file);
                         }
                         else{
-                            FILE *file = fopen("/home/hadoop/tensor/data_trace/trace_record.txt", "a");
+                            FILE *file = fopen("/mnt/data_trace/trace_record.txt", "a");
                             fprintf(file, "%d\t%d\t%d\t%d\t\t%d\t\tOP:= SendCom_To_Servers\n",
                                     record_count, send_id, recv_id, send_bytes, msg.meta.push_pull_operation);//此时的依赖为-1，不存在依赖；
                             fclose(file);
@@ -503,7 +503,7 @@ class ZMQVan : public Van {
                             Trace_Pull_Send[recv_id_t][key].operation_num = 0;
                             Trace_Pull_Send[recv_id_t][key].time            = end;
                             if (record_count == 0) {//如果是刚开始，则在文件的第一部分写入相关内容的名称；
-                                FILE *file = fopen("/home/hadoop/tensor/data_trace/trace_record.txt", "a");
+                                FILE *file = fopen("/mnt/data_trace/trace_record.txt", "a");
                                 fprintf(file,"====================================================================================================================================\n");
                             	fprintf(file,"==		 num_workers: = %d     num_servers: = %d     worker_hostname:= %s            \n", num_workers, num_servers, host);//基础信息
 			    	fprintf(file,"==		 Worker_ID: = ");
@@ -530,7 +530,7 @@ class ZMQVan : public Van {
                                 fclose(file);
                             }
                             else{
-                                FILE *file = fopen("/home/hadoop/tensor/data_trace/trace_record.txt", "a");
+                                FILE *file = fopen("/mnt/data_trace/trace_record.txt", "a");
                                 fprintf(file, "%d\t%d\t%d\t%d\t\t%d\t\tOP:= Pull_Send_Worker\t\t%d-%d-s%d\t\t%d\t\t%d\t\t%d\t\t%d\t\t%d\n",
                                         record_count, send_id, recv_id, send_bytes, msg.meta.push_pull_operation, key, Trace_Pull_Send[recv_id_t][key].operation_num, recv_id_t, 0, 0, end.tv_sec, end.tv_usec, -1);//此时的依赖为-1，不存在依赖；
                                 fclose(file);
@@ -541,7 +541,7 @@ class ZMQVan : public Van {
                             dep_time = 1000000 * (end.tv_sec - (Trace_Push_Recv[recv_id_t][key].time).tv_sec) + end.tv_usec - (Trace_Push_Recv[recv_id_t][key].time).tv_usec;
                             Trace_Pull_Send[recv_id_t][key].operation_num = Trace_Push_Recv[recv_id_t][key].operation_num+1;
                             Trace_Pull_Send[recv_id_t][key].time            = end;
-                            FILE *file = fopen("/home/hadoop/tensor/data_trace/trace_record.txt", "a");
+                            FILE *file = fopen("/mnt/data_trace/trace_record.txt", "a");
                             fprintf(file, "%d\t%d\t%d\t%d\t\t%d\t\tOP:= Pull_Send_Worker\t\t%d-%d-s%d\t\t%d\t\t%d\t\t%d\t\t%d\t\t%d-%d-s%d\n",
                                     record_count, send_id, recv_id, send_bytes, msg.meta.push_pull_operation, key, Trace_Pull_Send[recv_id_t][key].operation_num, recv_id_t,2, dep_time, end.tv_sec, end.tv_usec, key, Trace_Push_Recv[recv_id_t][key].operation_num, recv_id_t);//push_Send依赖于所有key值的Recv_Pull操作的完成；
                             fclose(file);
@@ -556,7 +556,7 @@ class ZMQVan : public Van {
             if(msg.meta.recver == 1){
                 recv_id = msg.meta.recver + num_servers + num_workers - 1;//接收的节点为scheduler节点
                 if (record_sch == 0) {
-                    FILE *file = fopen("/home/hadoop/tensor/data_trace/trace_sch_record.txt", "a");
+                    FILE *file = fopen("/mnt/data_trace/trace_sch_record.txt", "a");
                     fprintf(file, "ID\tsrc\tdst\tlength\t\tDep\t\tdTime\t\tIDdep\t\tDep_PP\n");
                     fprintf(file, "%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t\tOP:= Server_Send_Sch\t\two_s_f_msg.meta.recver:=%d\tmsg.meta.sender:=%d\tnum_workers:=%d\tnum_servers:=%d\trecv_id:=%d\tworker_hostname:=\t%s\n",
                             record_count, send_id, recv_id, send_bytes, 0, 0, record_count - 1,msg.meta.push_pull_operation, msg.meta.recver, msg.meta.sender,num_workers, num_servers,recv_id,host);
@@ -564,7 +564,7 @@ class ZMQVan : public Van {
                 }
                 else{//如果不是第一次send，则存在接收依赖；
                     dep_time = 1000000 * (end.tv_sec - start.tv_sec) + end.tv_usec - start.tv_usec;
-                    FILE *file = fopen("/home/hadoop/tensor/data_trace/trace_sch_record.txt","a");
+                    FILE *file = fopen("/mnt/data_trace/trace_sch_record.txt","a");
                     fprintf(file, "%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t\tOP:= Server_Send_Sch\t\two_s_p_msg.meta.recver:=%d\n", record_count, send_id, recv_id, send_bytes,
                             2, dep_time, record_count - 1,msg.meta.push_pull_operation, msg.meta.recver);
                     fclose(file);
@@ -579,7 +579,7 @@ class ZMQVan : public Van {
                         Ser_Push_Send[recv_id][key].operation_num = 0;
                         Ser_Push_Send[recv_id][key].time            = end;
                         if (record_count == 0) {//如果是刚开始，则在文件的第一部分写入相关内容的名称；
-                            FILE *file = fopen("/home/hadoop/tensor/data_trace/trace_record.txt", "a");
+                            FILE *file = fopen("/mnt/data_trace/trace_record.txt", "a");
                             fprintf(file,"====================================================================================================================================\n");
                             fprintf(file,"==		 num_workers: = %d     num_servers: = %d     server_hostname:= %s            \n", num_workers, num_servers, host);//基础信息
 			    fprintf(file,"==		 Worker_ID: = ");
@@ -606,7 +606,7 @@ class ZMQVan : public Van {
                             fclose(file);
                         }
                         else{
-                            FILE *file = fopen("/home/hadoop/tensor/data_trace/trace_record.txt", "a");
+                            FILE *file = fopen("/mnt/data_trace/trace_record.txt", "a");
                             fprintf(file, "%d\t%d\t%d\t%d\t\t%d\t\tOP:= Push_Send_Server\t\t%d-%d-w%d\t\t%d\t\t%d\t\t%d\t\t%d\t\t%d\n",
                                     record_count, send_id, recv_id, send_bytes, msg.meta.push_pull_operation, key, Ser_Push_Send[recv_id][key].operation_num, recv_id, 0, 0, end.tv_sec, end.tv_usec, -1);//此时的依赖为-1，不存在依赖；
                             fclose(file);
@@ -617,7 +617,7 @@ class ZMQVan : public Van {
                         dep_time = 1000000 * (end.tv_sec - (Ser_Push_Recv[recv_id][key].time).tv_sec) + end.tv_usec - (Ser_Push_Recv[recv_id][key].time).tv_usec;
                         Ser_Push_Send[recv_id][key].operation_num = Ser_Push_Recv[recv_id][key].operation_num+1;
                         Ser_Push_Send[recv_id][key].time            = end;
-                        FILE *file = fopen("/home/hadoop/tensor/data_trace/trace_record.txt", "a");
+                        FILE *file = fopen("/mnt/data_trace/trace_record.txt", "a");
                         fprintf(file, "%d\t%d\t%d\t%d\t\t%d\t\tOP:= Push_Send_Server\t\t%d-%d-w%d\t\t%d\t\t%d\t\t%d\t\t%d\t\t",
                                 record_count, send_id, recv_id, send_bytes, msg.meta.push_pull_operation, key, Ser_Push_Send[recv_id][key].operation_num, recv_id, 1, dep_time, end.tv_sec, end.tv_usec);//push_Send依赖于所有key值的Recv_Pull操作的完成；
                         //============同步模式下的依赖关系===========//
@@ -641,7 +641,7 @@ class ZMQVan : public Van {
                     //此为Pull_Send
                     if(msg.meta.recv_key == -1){
                         if (record_count == 0) {//如果是刚开始，则在文件的第一部分写入相关内容的名称；
-                            FILE *file = fopen("/home/hadoop/tensor/data_trace/trace_record.txt", "a");
+                            FILE *file = fopen("/mnt/data_trace/trace_record.txt", "a");
                             fprintf(file,"====================================================================================================================================\n");
                             fprintf(file,"==		 num_workers: = %d     num_servers: = %d     server_hostname:= %s            \n", num_workers, num_servers, host);//基础信息
 			    fprintf(file,"==		 Worker_ID: = ");
@@ -668,7 +668,7 @@ class ZMQVan : public Van {
                             fclose(file);
                         }
                         else{
-                            FILE *file = fopen("/home/hadoop/tensor/data_trace/trace_record.txt", "a");
+                            FILE *file = fopen("/mnt/data_trace/trace_record.txt", "a");
                             fprintf(file, "%d\t%d\t%d\t%d\t\t%d\t\tOP:= SendCom_To_Workers\n",
                                     record_count, send_id, recv_id, send_bytes, msg.meta.push_pull_operation);//此时的依赖为-1，不存在依赖；
                             fclose(file);
@@ -679,7 +679,7 @@ class ZMQVan : public Van {
                             Ser_Pull_Send[recv_id][key].operation_num = 0;
                             Ser_Pull_Send[recv_id][key].time            = end;
                             if (record_count == 0) {//如果是刚开始，则在文件的第一部分写入相关内容的名称；
-                                FILE *file = fopen("/home/hadoop/tensor/data_trace/trace_record.txt", "a");
+                                FILE *file = fopen("/mnt/data_trace/trace_record.txt", "a");
                                 fprintf(file,"====================================================================================================================================\n");
                             	fprintf(file,"==		 num_workers: = %d     num_servers: = %d     server_hostname:= %s            \n", num_workers, num_servers, host);//基础信息
 			    	fprintf(file,"==		 Worker_ID: = ");
@@ -706,7 +706,7 @@ class ZMQVan : public Van {
                                 fclose(file);
                             }
                             else{
-                                FILE *file = fopen("/home/hadoop/tensor/data_trace/trace_record.txt", "a");
+                                FILE *file = fopen("/mnt/data_trace/trace_record.txt", "a");
                                 fprintf(file, "%d\t%d\t%d\t%d\t\t%d\t\tOP:= Pull_Send_Server\t\t%d-%d-w%d\t\t%d\t\t%d\t\t%d\t\t%d\t\t%d\n",
                                         record_count, send_id, recv_id, send_bytes, msg.meta.push_pull_operation, key, Ser_Push_Send[recv_id][key].operation_num, recv_id, 0, 0, end.tv_sec, end.tv_usec, -1);//此时的依赖为-1，不存在依赖；
                                 fclose(file);
@@ -717,7 +717,7 @@ class ZMQVan : public Van {
                             dep_time = 1000000 * (end.tv_sec - (Ser_Pull_Recv[recv_id][key].time).tv_sec) + end.tv_usec - (Ser_Pull_Recv[recv_id][key].time).tv_usec;
                             Ser_Pull_Send[recv_id][key].operation_num = Ser_Pull_Recv[recv_id][key].operation_num+1;
                             Ser_Pull_Send[recv_id][key].time            = end;
-                            FILE *file = fopen("/home/hadoop/tensor/data_trace/trace_record.txt", "a");
+                            FILE *file = fopen("/mnt/data_trace/trace_record.txt", "a");
                             fprintf(file, "%d\t%d\t%d\t%d\t\t%d\t\tOP:= Pull_Send_Server\t\t%d-%d-w%d\t\t%d\t\t%d\t\t%d\t\t%d\t\t%d-%d-w%d\n",
                                     record_count, send_id, recv_id, send_bytes, msg.meta.push_pull_operation, key, Ser_Pull_Send[recv_id][key].operation_num, recv_id, 3, dep_time, end.tv_sec, end.tv_usec, key, Ser_Pull_Recv[recv_id][key].operation_num, recv_id);//push_Send依赖于所有key值的Recv_Pull操作的完成；
                             fclose(file);
@@ -769,14 +769,14 @@ class ZMQVan : public Van {
                 dep_time = 0;
             }*/
             if(record_sch == 0){
-                FILE *file = fopen("/home/hadoop/tensor/data_trace/trace_sch_record.txt","a");
+                FILE *file = fopen("/mnt/data_trace/trace_sch_record.txt","a");
                 fprintf(file, "ID\tsrc\tdst\tlength\tDep\tdTime\tIDdep\tDep_PP\n");
                 fprintf(file, "%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t\tOP:= Scheduler_Comm\t\trec_sch_f_msg.meta.recver:=%d\tscheduler_hostname:=%s\n", record_count,
                         send_id, recv_id, send_bytes, 0, 0, record_count - 1, msg->meta.push_pull_operation, msg->meta.recver,host);
                 fclose(file);
             }
             else{
-                FILE *file = fopen("/home/hadoop/tensor/data_trace/trace_sch_record.txt","a");
+                FILE *file = fopen("/mnt/data_trace/trace_sch_record.txt","a");
                 fprintf(file, "%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t\tOP:= Scheduler_Comm\t\trec_sch_plus_msg.meta.recver:=%d\n", record_count,
                         send_id, recv_id, send_bytes, 1, dep_time, record_count - 1, msg->meta.push_pull_operation, msg->meta.recver);
                 fclose(file);
@@ -789,7 +789,7 @@ class ZMQVan : public Van {
             if(msg->meta.sender%2 != 0){
                 send_id = msg->meta.sender + num_servers + num_workers - 1;//发送的节点是scheduler节点；
                 if(record_sch == 0){
-                    FILE *file = fopen("/home/hadoop/tensor/data_trace/trace_sch_record.txt","a");
+                    FILE *file = fopen("/mnt/data_trace/trace_sch_record.txt","a");
                     fprintf(file, "ID\tsrc\tdst\tlength\tDep\tdTime\tIDdep\tDep_PP\n");
                     fprintf(file, "%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t\tOP:= Scheduler_to_Worker\t\trec_w_f_msg.meta.recver:=%d\tworker_hostname:=\t%s\n", record_count,
                             send_id, recv_id, send_bytes, 0, 0, record_count - 1,msg->meta.push_pull_operation, msg->meta.recver,host);
@@ -797,7 +797,7 @@ class ZMQVan : public Van {
                 }
                 else{
                     dep_time = 1000000*(start.tv_sec - end.tv_sec) + (start.tv_usec - end.tv_usec);
-                    FILE *file = fopen("/home/hadoop/tensor/data_trace/trace_sch_record.txt","a");
+                    FILE *file = fopen("/mnt/data_trace/trace_sch_record.txt","a");
                     fprintf(file, "%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t\tOP:= Scheduler_to_Worker\t\trec_w_plus_msg.meta.recver:=%d\n", record_count,
                             send_id, recv_id, send_bytes, 1, dep_time, record_count - 1, msg->meta.push_pull_operation, msg->meta.recver);
                     fclose(file);
@@ -812,7 +812,7 @@ class ZMQVan : public Van {
                         Trace_Push_Recv[send_id_t][key].operation_num = 0;
                         Trace_Push_Recv[send_id_t][key].time            = end;
                         if(record_count == 0) {//如果是刚开始，则在文件的第一部分写入相关内容的名称；
-                            FILE *file = fopen("/home/hadoop/tensor/data_trace/trace_record.txt", "a");
+                            FILE *file = fopen("/mnt/data_trace/trace_record.txt", "a");
                             fprintf(file,"====================================================================================================================================\n");
                             fprintf(file,"==		 num_workers: = %d     num_servers: = %d     worker_hostname:= %s            \n", num_workers, num_servers, host);//基础信息
 			    fprintf(file,"==		 Worker_ID: = ");
@@ -839,7 +839,7 @@ class ZMQVan : public Van {
                             fclose(file);
                         }
                         else{
-                            FILE *file = fopen("/home/hadoop/tensor/data_trace/trace_record.txt", "a");
+                            FILE *file = fopen("/mnt/data_trace/trace_record.txt", "a");
                             fprintf(file, "%d\t%d\t%d\t%d\t\t%d\t\tOP:= Push_Recv_Worker\t\t%d-%d-s%d\t\t%d\t\t%d\t\t%d\t\t%d\t\t%d\n",
                                     record_count, send_id, recv_id, send_bytes, msg->meta.push_pull_operation, key, Trace_Push_Recv[send_id_t][key].operation_num,send_id_t, 0, 0, start.tv_sec, start.tv_usec, -1);//此时的依赖为-1，不存在依赖；
                             fclose(file);
@@ -850,7 +850,7 @@ class ZMQVan : public Van {
                         dep_time = 1000000 * (start.tv_sec - (Trace_Push_Send[send_id_t][key].time).tv_sec) + start.tv_usec - (Trace_Push_Send[send_id_t][key].time).tv_usec;
                         Trace_Push_Recv[send_id_t][key].operation_num = Trace_Push_Send[send_id_t][key].operation_num+1;
                         Trace_Push_Recv[send_id_t][key].time            = start;
-                        FILE *file = fopen("/home/hadoop/tensor/data_trace/trace_record.txt", "a");
+                        FILE *file = fopen("/mnt/data_trace/trace_record.txt", "a");
                         fprintf(file, "%d\t%d\t%d\t%d\t\t%d\t\tOP:= Push_Recv_Worker\t\t%d-%d-s%d\t\t%d\t\t%d\t\t%d\t\t%d\t\t%d-%d-s%d\n",
                                 record_count, send_id, recv_id, send_bytes, msg->meta.push_pull_operation, key, Trace_Push_Recv[send_id_t][key].operation_num, send_id_t, 1, dep_time, start.tv_sec, start.tv_usec, key, Trace_Push_Send[send_id_t][key].operation_num, send_id_t);//push_Recv依赖于push_send操作的完成；依赖关系为push-on-push
                         fclose(file);
@@ -860,7 +860,7 @@ class ZMQVan : public Van {
                     //此为Pull_Recv
                     if(msg->meta.recv_key == -1){
                         if (record_count == 0) {//如果是刚开始，则在文件的第一部分写入相关内容的名称；
-                            FILE *file = fopen("/home/hadoop/tensor/data_trace/trace_record.txt", "a");
+                            FILE *file = fopen("/mnt/data_trace/trace_record.txt", "a");
                             fprintf(file,"====================================================================================================================================\n");
                             fprintf(file,"==		 num_workers: = %d     num_servers: = %d     worker_hostname:= %s            \n", num_workers, num_servers, host);//基础信息
 			    fprintf(file,"==		 Worker_ID: = ");
@@ -887,7 +887,7 @@ class ZMQVan : public Van {
                             fclose(file);
                         }
                         else{
-                            FILE *file = fopen("/home/hadoop/tensor/data_trace/trace_record.txt", "a");
+                            FILE *file = fopen("/mnt/data_trace/trace_record.txt", "a");
                             fprintf(file, "%d\t%d\t%d\t%d\t\t%d\t\tOP:= SendCom_To_Servers\n",
                                     record_count, send_id, recv_id, send_bytes, msg->meta.push_pull_operation);//无需体现其依赖性
                             fclose(file);
@@ -898,7 +898,7 @@ class ZMQVan : public Van {
                             Trace_Pull_Recv[send_id_t][key].operation_num = 0;
                             Trace_Pull_Recv[send_id_t][key].time            = start;
                             if (record_count == 0) {//如果是刚开始，则在文件的第一部分写入相关内容的名称；
-                                FILE *file = fopen("/home/hadoop/tensor/data_trace/trace_record.txt", "a");
+                                FILE *file = fopen("/mnt/data_trace/trace_record.txt", "a");
                                 fprintf(file,"====================================================================================================================================\n");
                             	fprintf(file,"==		 num_workers: = %d     num_servers: = %d     worker_hostname:= %s            \n", num_workers, num_servers, host);//基础信息
 			    	fprintf(file,"==		 Worker_ID: = ");
@@ -925,7 +925,7 @@ class ZMQVan : public Van {
                                 fclose(file);
                             }
                             else{
-                                FILE *file = fopen("/home/hadoop/tensor/data_trace/trace_record.txt", "a");
+                                FILE *file = fopen("/mnt/data_trace/trace_record.txt", "a");
                                 fprintf(file, "%d\t%d\t%d\t%d\t\t%d\t\tOP:= Pull_Recv_Worker\t\t%d-%d-s%d\t\t%d\t\t%d\t\t%d\t\t%d\t\t%d\n",
                                         record_count, send_id, recv_id, send_bytes, msg->meta.push_pull_operation, key, Trace_Pull_Recv[send_id_t][key].operation_num,send_id_t, 0, 0, start.tv_sec, start.tv_usec, -1);//此时的依赖为-1，不存在依赖；
                                 fclose(file);
@@ -936,7 +936,7 @@ class ZMQVan : public Van {
                             dep_time = 1000000 * (start.tv_sec - (Trace_Pull_Send[send_id_t][key].time).tv_sec) + start.tv_usec - (Trace_Pull_Send[send_id_t][key].time).tv_usec;
                             Trace_Pull_Recv[send_id_t][key].operation_num = Trace_Pull_Send[send_id_t][key].operation_num+1;
                             Trace_Pull_Recv[send_id_t][key].time            = end;
-                            FILE *file = fopen("/home/hadoop/tensor/data_trace/trace_record.txt", "a");
+                            FILE *file = fopen("/mnt/data_trace/trace_record.txt", "a");
                             fprintf(file, "%d\t%d\t%d\t%d\t\t%d\t\tOP:= Pull_Recv_Worker\t\t%d-%d-s%d\t\t%d\t\t%d\t\t%d\t\t%d\t\t%d-%d-s%d\n",
                                     record_count, send_id, recv_id, send_bytes, msg->meta.push_pull_operation, key, Trace_Pull_Recv[send_id_t][key].operation_num, send_id_t,3, dep_time, start.tv_sec, start.tv_usec, key, Trace_Pull_Send[send_id_t][key].operation_num, send_id_t);//push_Recv依赖于push_send操作的完成；依赖关系为push-on-push
                             fclose(file);
@@ -953,7 +953,7 @@ class ZMQVan : public Van {
             if(msg->meta.sender == 1){
                 send_id = msg->meta.sender + num_servers + num_workers - 1;//发送的节点是scheduler节点；
                 if(record_sch == 0){
-                    FILE *file = fopen("/home/hadoop/tensor/data_trace/trace_sch_record.txt","a");
+                    FILE *file = fopen("/mnt/data_trace/trace_sch_record.txt","a");
                     fprintf(file, "ID\tsrc\tdst\tlength\\ttDep\t\tdTime\t\tIDdep\t\tDep_PP\n");
                     fprintf(file, "%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t\tOP:= Scheduler_to_Server\t\trec_w_f_msg.meta.recver:=%d\tworker_hostname:=\t%s\n", record_count,
                             send_id, recv_id, send_bytes, 0, 0, record_count - 1, msg->meta.push_pull_operation, msg->meta.recver,host);
@@ -961,7 +961,7 @@ class ZMQVan : public Van {
                 }
                 else{
                     dep_time = 1000000*(start.tv_sec - end.tv_sec) + (start.tv_usec - end.tv_usec);
-                    FILE *file = fopen("/home/hadoop/tensor/data_trace/trace_sch_record.txt","a");
+                    FILE *file = fopen("/mnt/data_trace/trace_sch_record.txt","a");
                     fprintf(file, "%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t\tOP:= Scheduler_to_Server\t\trec_w_plus_msg.meta.recver:=%d\n", record_count,
                             send_id, recv_id, send_bytes, 1, dep_time, record_count - 1, msg->meta.push_pull_operation, msg->meta.recver);
                     fclose(file);
@@ -979,7 +979,7 @@ class ZMQVan : public Van {
                            Ser_Push_Recv[send_id][key].operation_num = 0;
                         Ser_Push_Recv[send_id][key].time            = start;
                         if (record_count == 0) {//如果是刚开始，则在文件的第一部分写入相关内容的名称；
-                           FILE *file = fopen("/home/hadoop/tensor/data_trace/trace_record.txt", "a");
+                           FILE *file = fopen("/mnt/data_trace/trace_record.txt", "a");
                            fprintf(file,"====================================================================================================================================\n");
                            fprintf(file,"==		 num_workers: = %d     num_servers: = %d     server_hostname:= %s            \n", num_workers, num_servers, host);//基础信息
 			   fprintf(file,"==		 Worker_ID: = ");
@@ -1006,7 +1006,7 @@ class ZMQVan : public Van {
                             fclose(file);
                         }
                         else{
-                            FILE *file = fopen("/home/hadoop/tensor/data_trace/trace_record.txt", "a");
+                            FILE *file = fopen("/mnt/data_trace/trace_record.txt", "a");
                             fprintf(file, "%d\t%d\t%d\t%d\t\t%d\t\tOP:= Push_Recv_Server\t\t%d-%d-w%d\t\t%d\t\t%d\t\t%d\t\t%d\t\t%d\n",
                                     record_count, send_id, recv_id, send_bytes, msg->meta.push_pull_operation, key, Ser_Push_Recv[send_id][key].operation_num, send_id, 0, 0, start.tv_sec, start.tv_usec, -1);//此时的依赖为-1，不存在依赖；
                             fclose(file);
@@ -1017,7 +1017,7 @@ class ZMQVan : public Van {
                         dep_time = 1000000 * (start.tv_sec - (Ser_Pull_Send[send_id][key].time).tv_sec) + start.tv_usec - (Ser_Pull_Send[send_id][key].time).tv_usec;
                         Ser_Push_Recv[send_id][key].operation_num = Ser_Pull_Send[send_id][key].operation_num+1;
                         Ser_Push_Recv[send_id][key].time            = start;
-                        FILE *file = fopen("/home/hadoop/tensor/data_trace/trace_record.txt", "a");
+                        FILE *file = fopen("/mnt/data_trace/trace_record.txt", "a");
                         fprintf(file, "%d\t%d\t%d\t%d\t\t%d\t\tOP:= Push_Recv_Server\t\t%d-%d-w%d\t\t%d\t\t%d\t\t%d\t\t%d\t\t%d-w%d\n",
                                 record_count, send_id, recv_id, send_bytes, msg->meta.push_pull_operation, key, Ser_Push_Recv[send_id][key].operation_num, send_id, 4, dep_time, start.tv_sec, start.tv_usec, Ser_Pull_Send[send_id][key].operation_num, send_id);//push_Recv依赖于整组pull_send操作的完成；依赖关系为push-on-pull
                         fclose(file);
@@ -1027,7 +1027,7 @@ class ZMQVan : public Van {
                 //此为Pull_Recv
                     if(msg->meta.recv_key == -1){
                         if (record_count == 0) {//如果是刚开始，则在文件的第一部分写入相关内容的名称；
-                            FILE *file = fopen("/home/hadoop/tensor/data_trace/trace_record.txt", "a");
+                            FILE *file = fopen("/mnt/data_trace/trace_record.txt", "a");
                             fprintf(file,"====================================================================================================================================\n");
                             fprintf(file,"==		 num_workers: = %d     num_servers: = %d     worker_hostname:= %s            \n", num_workers, num_servers, host);//基础信息
 			    fprintf(file,"==		 Worker_ID: = ");
@@ -1054,7 +1054,7 @@ class ZMQVan : public Van {
                             fclose(file);
                         }
                         else{
-                            FILE *file = fopen("/home/hadoop/tensor/data_trace/trace_record.txt", "a");
+                            FILE *file = fopen("/mnt/data_trace/trace_record.txt", "a");
                             fprintf(file, "%d\t%d\t%d\t%d\t\t%d\t\tOP:= SendCom_To_Workers\n",
                                     record_count, send_id, recv_id, send_bytes, msg->meta.push_pull_operation);//无需体现其依赖性
                             fclose(file);
@@ -1065,7 +1065,7 @@ class ZMQVan : public Van {
                             Ser_Pull_Recv[send_id][key].operation_num = 0;
                             Ser_Pull_Recv[send_id][key].time            = start;
                             if (record_count == 0) {//如果是刚开始，则在文件的第一部分写入相关内容的名称；
-                                FILE *file = fopen("/home/hadoop/tensor/data_trace/trace_record.txt", "a");
+                                FILE *file = fopen("/mnt/data_trace/trace_record.txt", "a");
                                 fprintf(file,"====================================================================================================================================\n");
                             	fprintf(file,"==		 num_workers: = %d     num_servers: = %d     worker_hostname:= %s            \n", num_workers, num_servers, host);//基础信息
 			    	fprintf(file,"==		 Worker_ID: = ");
@@ -1093,7 +1093,7 @@ class ZMQVan : public Van {
                             }
                             else{
 				                dep_time = 1000000*(start.tv_sec - (Ser_Push_Send[0][key].time).tv_sec) + start.tv_usec - (Ser_Push_Send[0][key].time).tv_usec;
-                                FILE *file = fopen("/home/hadoop/tensor/data_trace/trace_record.txt", "a");
+                                FILE *file = fopen("/mnt/data_trace/trace_record.txt", "a");
                                 fprintf(file, "%d\t%d\t%d\t%d\t\t%d\t\tOP:= Pull_Recv_Server\t\t%d-%d-w%d\t\t%d\t\t%d\t\t%d\t\t%d\t\t%d-%d-w0\n",
                                         record_count, send_id, recv_id, send_bytes, msg->meta.push_pull_operation, key, Ser_Pull_Recv[send_id][key].operation_num, send_id, 2, dep_time, start.tv_sec, start.tv_usec, key, Ser_Push_Send[0][key].operation_num);//此时的依赖为-1，不存在依赖；
                                 fclose(file);
@@ -1104,7 +1104,7 @@ class ZMQVan : public Van {
                             dep_time = 1000000 * (start.tv_sec - (Ser_Push_Send[send_id][key].time).tv_sec) + start.tv_usec - (Ser_Push_Send[send_id][key].time).tv_usec;
                             Ser_Pull_Recv[send_id][key].operation_num = Ser_Push_Send[send_id][key].operation_num+1;
                             Ser_Pull_Recv[send_id][key].time            = start;
-                            FILE *file = fopen("/home/hadoop/tensor/data_trace/trace_record.txt", "a");
+                            FILE *file = fopen("/mnt/data_trace/trace_record.txt", "a");
                             fprintf(file, "%d\t%d\t%d\t%d\t\t%d\t\tOP:= Pull_Recv_Server\t\t%d-%d-w%d\t\t%d\t\t%d\t\t%d\t\t%d\t\t%d-%d-w%d\n",
                                     record_count, send_id, recv_id, send_bytes, msg->meta.push_pull_operation, key, Ser_Pull_Recv[send_id][key].operation_num, send_id, 2, dep_time, start.tv_sec, start.tv_usec, key, Ser_Push_Send[send_id][key].operation_num, send_id);//push_Recv依赖于整组pull_send操作的完成；依赖关系为push-on-pull
                             fclose(file);
@@ -1162,7 +1162,7 @@ class ZMQVan : public Van {
 /*      if(i == 0)
       {
           key_ = *((SArray<Key> *)(data));
-          FILE *file = fopen("/home/hadoop/tensor/data_trace/trace_push_pull.txt","a");
+          FILE *file = fopen("/mnt/data_trace/trace_push_pull.txt","a");
           fprintf(file,"SendMsg_Key: = %d\t\tMeta_Key: = %d\n",key_[0],msg.meta.recv_key);
           fclose(file);
 	  key = key_[0];
@@ -1233,7 +1233,7 @@ class ZMQVan : public Van {
 //======================== xym edit 12-21 ==================================//
 /*        if(i == 2){
             key = *((int *)(&((msg->data)[0][0])));
-            FILE *file = fopen("/home/hadoop/tensor/data_trace/trace_push_pull.txt","a");
+            FILE *file = fopen("/mnt/data_trace/trace_push_pull.txt","a");
             fprintf(file,"Recv_Msg_Key: = %d\t\tMeta_Key: = %d\n",key, msg->meta.recv_key);
             fclose(file);
         }
