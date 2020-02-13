@@ -134,7 +134,7 @@ int Van::Send(const Message& msg) {
   std::string operation;
   if(msg.meta.push) operation = "push_operation";
   if(!msg.meta.push) operation = "pull_operation";
-  FILE *file = fopen("/home/hadoop/tensor/trace_push_pull.txt","a");
+  FILE *file = fopen("/mnt/data_trace/trace_push_pull.txt","a");
   fprintf(file,"Operation: %s\t\tPP:= %d\t\tKey_Value:= %d\t\tfunction:= Van::Send()\n", operation.c_str(), msg.meta.push_pull_operation,msg.meta.recv_key);
   fclose(file);
 //=====================xym edit this -- 2017-12-11================//
@@ -162,7 +162,7 @@ void Van::Receiving() {
   std::string operation;
   if(msg.meta.push) operation = "push_operation";
   if(!msg.meta.push) operation = "pull_operation";
-  FILE *file = fopen("/home/hadoop/tensor/trace_push_pull.txt","a");
+  FILE *file = fopen("/mnt/data_trace/trace_push_pull.txt","a");
   fprintf(file,"Operation: %s\t\tPP:= %d\t\tKey_Value:= %d\t\tfunction:= Van::Receiving\n", operation.c_str(), msg.meta.push_pull_operation,msg.meta.recv_key);
   fclose(file);
 //=====================xym edit this -- 2017-12-11================//

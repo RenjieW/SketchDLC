@@ -29,7 +29,7 @@ endif()
 
 
 mxnet_option(USE_OPENCV           "Build with OpenCV support" ON)
-mxnet_option(USE_OPENMP           "Build with Openmp support" ON)
+mxnet_option(USE_OPENMP           "Build with Openmp support" OFF)
 mxnet_option(USE_CUDNN            "Build with cudnn support"  OFF) # one could set CUDNN_ROOT for search path
 mxnet_option(USE_LAPACK           "Build with lapack support" ON IF NOT MSVC)
 mxnet_option(USE_MKL_IF_AVAILABLE "Use MKL if found" ON)
